@@ -3,13 +3,13 @@ library(tidyverse)
 library("org.Hs.eg.db")
 ###
 
-setwd("C:/projects/GWAS_project/src")
+setwd("./src")
 
 #convert mouse to human
 #use mgi homolog list
 #http://www.informatics.jax.org/downloads/reports/HOM_MouseHumanSequence.rpt (Nov-22-2020)
 
-homology = read.table("../data/mgi_homologs.txt",sep = "\t", header = T)
+homology = read.table("./data/mgi_homologs.txt",sep = "\t", header = T)
 
 convertMousetoHuman = function(x){
   human=c()
@@ -29,7 +29,7 @@ convertMousetoHuman = function(x){
 
 #Using AmiGO2, downloaded GO terms for the following terms (osteo, bone, ossif). Accessed 7/28/19
 #Used filters: is_obsolete:False and idspace: GO
-bone_terms = read.delim("../data/GO_term_bone.txt", stringsAsFactors = FALSE, header = FALSE)
+bone_terms = read.delim("./data/GO_term_bone.txt", stringsAsFactors = FALSE, header = FALSE)
 #trim to exclude some terms
 
 ex = c("monocyte","pyridine","backbone","megakaryocyte","hair","kidney","neuro","ureter","B cell","tolerance","tendon","muscle","heart","cardio","beak","nephric","tooth","chemotaxis","hemopoiesis","amniotic","wishful")
@@ -38,10 +38,10 @@ bone_terms = bone_terms[-(grep(pattern = paste(ex,collapse = "|"), x=bone_terms$
 bone_terms = bone_terms$V1
 
 #
-osteo_terms = read.delim("../data/GO_term_osteo.txt", stringsAsFactors = FALSE, header = FALSE)
+osteo_terms = read.delim("./data/GO_term_osteo.txt", stringsAsFactors = FALSE, header = FALSE)
 osteo_terms = osteo_terms$V1
 #
-ossif_terms = read.delim("../data/GO_term_ossif.txt", stringsAsFactors = FALSE, header = FALSE)
+ossif_terms = read.delim("./data/GO_term_ossif.txt", stringsAsFactors = FALSE, header = FALSE)
 ossif_terms = ossif_terms$V1
 #
 terms = c(ossif_terms, bone_terms, osteo_terms)
@@ -103,7 +103,7 @@ unq_genes = unique(genes)
 
 
 #add MGI genes from "human-mouse disease connection". manually downloaded osteoporosis, bone mineral density, osteoblast clast and cyte. human and mouse genes
-mgi = read.delim("../data/MGIhdpQuery_markers_20201123_124412.txt",stringsAsFactors = FALSE) #Nov-23-2020
+mgi = read.delim("./data/MGIhdpQuery_markers_20201123_124412.txt",stringsAsFactors = FALSE) #Nov-23-2020
 
 #uses mus ensembl annotations
 
@@ -182,4 +182,4 @@ superduperset$ens[which(superduperset$SYMBOL == "DNAI3")] = 'ENSG00000162643'
 superduperset$ens[which(superduperset$SYMBOL == "C12ORF4")] = 'ENSG00000047621'
 superduperset$SYMBOL[which(superduperset$SYMBOL == "C12ORF4")] = 'C12orf4'
 
-write.table(superduperset, "../results/superset_humanized_proteinCoding.txt", sep = "\t", col.names = FALSE, row.names=FALSE, quote=FALSE)
+write.table(superduperset, "./results/superset_humanized_proteinCoding.txt", sep = "\t", col.names = FALSE, row.names=FALSE, quote=FALSE)

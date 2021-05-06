@@ -3,7 +3,7 @@ library(jsonlite)
 library(OpenStats)
 library(ggplot2)
 #packageVersion("Solrium") version: 1.1.4
-setwd("C:/projects/GWAS_project/src")
+setwd("./src")
 
 
 
@@ -17,10 +17,6 @@ setwd("C:/projects/GWAS_project/src")
 
 #query core for all "experimental" mice with BMD parameter name, and fact by gene symbol.  faceting gives counts of occurence of gene symbol, with a mincount of 14, which is the minimum (7 males + 7 females) for DXA phenotyping protocol
 (res = impc$facet(params = list(q="parameter_name:Bone*Mineral*Density*", facet.field='gene_symbol',facet.limit=-1, facet.sort="count", facet.mincount=14,rows=0),progress = httr::progress()))
-
-#(res = impc$search(params = list(q="parameter_name:Bone*Mineral*Density* AND biological_sample_group:experimental", rows=-1),progress = httr::progress()))
-
-#(ctrl = impc$search(params = list(q="parameter_name:Bone*Mineral*Density* AND biological_sample_group:control"),progress = httr::progress()))
 
 
 #these are the genes with experimental mice for BMD query term
@@ -65,8 +61,8 @@ for(i in 1:length(impc_genes_vec)){
 }
 
 #last accessed Mar. 8, 2021
-#save(out, file = "../results/impc_results_raw")
-load(file = "../results/impc_results_raw")
+#save(out, file = "./results/impc_results_raw")
+load(file = "./results/impc_results_raw")
 
 #keep only "successful" analyses
 out = out[which(out$status == "Successful"),]
@@ -77,10 +73,10 @@ table(out$parameter_name)
 out = out[-grep(pattern = "including skull", x = out$parameter_name),]
 
 #NOTE: SPTBN1 is NOT PROCESSED. WHEN LOOKING, THERE ARE NO CONTROL MICE AND NO WEIGHTS FOR THE EXPERIMENTAL MICE
-save(out, file = "../results/impc_results_raw_processed_noskull")
+save(out, file = "./results/impc_results_raw_processed_noskull")
 #genes with significant terms at 5e-2 pval
 out_5e2 = out[which(as.numeric(out$male_ko_effect_p_value)<=0.05 | as.numeric(out$female_ko_effect_p_value)<=0.05 | as.numeric(out$genotype_effect_p_value)<= 0.05),]
-saveRDS(out, file="../results/impc_out_5e2.rds")
+saveRDS(out, file="./results/impc_out_5e2.rds")
 
 ### get gpatch1 raw data for plotting ###
 #Gpatch1 doc id : 64d6ee80a46520cf580c5588b588b0ba

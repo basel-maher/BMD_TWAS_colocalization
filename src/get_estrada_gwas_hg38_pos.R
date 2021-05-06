@@ -1,8 +1,8 @@
 library(biomaRt)
 
-
-lsbmd = read.table("data/estrada/GEFOS2_LSBMD_POOLED_GC.txt", header = T)
-fnbmd = read.table("data/estrada/GEFOS2_FNBMD_POOLED_GC.txt", header = T)
+#these data can be obtained at http://www.gefos.org/?q=content/data-release-2012
+lsbmd = read.table("./data/estrada/GEFOS2_LSBMD_POOLED_GC.txt", header = T)
+fnbmd = read.table("./data/estrada/GEFOS2_FNBMD_POOLED_GC.txt", header = T)
 
 chr = c(1:22, "X")
 

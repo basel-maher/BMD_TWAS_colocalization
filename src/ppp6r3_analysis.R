@@ -118,7 +118,7 @@ table(lm.AP$model$SEX, lm.AP$model$GENOTYPE)
 #car::vif(lm.AP)
 p7 = plot_lsmeans(lm.AP, sex = "A", y.lab = "Anterior-Posterior Width (mm)", main.pheno = "Anterior-Posterior Femoral Width", mult = c(0.003, 0.015, 0.008))
 
-ggsave(plot = p7,filename = "AP_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p7,filename = "AP_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 
 #################################################################
@@ -130,7 +130,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.ML$model$SEX, lm.ML$model$GENOTYPE)
 p10 = plot_lsmeans(lm.ML, sex = "A", y.lab = "Medial-Lateral Width (mm)", main.pheno = "Medial-Lateral Femoral Width", mult = c(0.003, 0.015, 0.008))
-ggsave(plot = p10,filename = "ML_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p10,filename = "ML_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 #################################################################
 lm.FL <-lm(FL~GENOTYPE+SEX+sac.weight+age,data=caliper_data_cond)
@@ -141,7 +141,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.FL$model$SEX, lm.FL$model$GENOTYPE)
 p13 = plot_lsmeans(lm.FL, sex = "A", y.lab = "Femoral Length (mm)", main.pheno = "Femoral Length", mult = c(0.003, 0.015, 0.008))
-ggsave(plot = p13,filename = "FL_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p13,filename = "FL_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 ####DXA analyses####
 #analyze: BMD, BMC, B.Area, T.Area, RST?, Fat?
 
@@ -164,7 +164,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.BMD$model$SEX, lm.BMD$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.BMD, sex = "A", y.lab = "areal Bone Mineral Density - Lumbar Spine (g HA/cm2)", main.pheno = "areal Bone Mineral Density - Lumbar Spine (g HA/cm2)", mult = c(0.003, 0.015, 0.009)))
-ggsave(plot = p1,filename = "ls_aBMD_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "ls_aBMD_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 
 ########################################### REPEAT FOR FEMURS ###################################################
@@ -176,7 +176,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.BMD$model$SEX, lm.BMD$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.BMD, sex = "A", y.lab = "areal Bone Mineral Density - Femur (g HA/cm2)", main.pheno = "areal Bone Mineral Density - Femur (g HA/cm2)", mult = c(0.003, 0.015, 0.009)))
-ggsave(plot = p1,filename = "fn_aBMD_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "fn_aBMD_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 #################################################################
 
@@ -198,7 +198,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.Tb.BV.TV$model$SEX, lm.Tb.BV.TV$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.Tb.BV.TV, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
-ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 #################################################################
 lm.Tb.vBMD <-lm(Tb.vBMD~GENOTYPE+SEX+sac.weight+age, data=uCT)
@@ -209,7 +209,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.Tb.vBMD$model$SEX, lm.Tb.vBMD$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.Tb.vBMD, sex = "A", y.lab = "Tb.vBMD (mgHA/cm3)", main.pheno = "Trabecular vBMD - Lumbar Spine (mgHA/cm3)", mult = c(0.007, 0.025, 0.015)))
-ggsave(plot = p1,filename = "vBMD_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "vBMD_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 
 ####
@@ -221,7 +221,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.Tb.vTMD$model$SEX, lm.Tb.vTMD$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.Tb.vTMD, sex = "A", y.lab = "Tb.TMD (mgHA/cm3)", main.pheno = "Trabecular TMD - Lumbar Spine (mgHA/cm3)", mult = c(0.002, 0.007, 0.004)))
-ggsave(plot = p1,filename = "TMD_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "TMD_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 ####
 lm.Tb.Sp <-lm(Tb.Sp~GENOTYPE+SEX+sac.weight+age, data=uCT)
@@ -232,7 +232,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.Tb.Sp$model$SEX, lm.Tb.Sp$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.Tb.Sp, sex = "A", y.lab = "Trabecular Separation", main.pheno = "Trabecular Separation - Lumbar Spine", mult = c(0.01, 0.03, 0.02)))
-ggsave(plot = p1,filename = "TbSp_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "TbSp_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 
 ####
@@ -244,7 +244,7 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.Tb.Th$model$SEX, lm.Tb.Th$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.Tb.Th, sex = "A", y.lab = "Trabecular Thickness", main.pheno = "Trabecular Thickness - Lumbar Spine", mult = c(0.01, 0.035, 0.02)))
-ggsave(plot = p1,filename = "TbTh_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "TbTh_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 ####
 lm.Tb.N <-lm(Tb.N~GENOTYPE+SEX+sac.weight+age, data=uCT)
@@ -255,6 +255,6 @@ lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
 table(lm.Tb.N$model$SEX, lm.Tb.N$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.Tb.N, sex = "A", y.lab = "Trabecular Number", main.pheno = "Trabecular Number - Lumbar Spine", mult = c(0.01, 0.035, 0.02)))
-ggsave(plot = p1,filename = "TbN_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
+ggsave(plot = p1,filename = "TbN_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
 
