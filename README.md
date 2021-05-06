@@ -7,7 +7,7 @@ TWAS analyses for eBMD and fracture GWAS were performed by Will Rosenow. These c
 ### 2) fastENLOC colocalization
 The following steps were perfomed for fastENLOC colocalization:
   * eBMD GWAS and fracture GWAS summary statistics were obtained [here](http://www.gefos.org/?q=content/data-release-2018).
-  * GWAS coordinates were converted to hg38 coordinates using [UCSC's online liftOver tool](https://genome.ucsc.edu/cgi-bin/hgLiftOver). The [prep_enloc.R](./src/prep_enloc.R) script was used to prepare input and parse the output. This script was also used to prepare the input for fastENLOC, where z-scores were calculated (beta/SE) and loci were defined based on the results of Berisa and Pickrell, 2015 ([PMC4731402](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4731402/)). 
+  * GWAS coordinates were converted to hg38 coordinates using [UCSC's online liftOver tool](https://genome.ucsc.edu/cgi-bin/hgLiftOver). The [prep_enloc.R](./src/prep_enloc.R) script was used to prepare input and parse the output. This script was also used to prepare the input for fastENLOC, where z-scores were calculated (beta/SE) and loci were defined based on the results of Berisa and Pickrell, 2015 ([PMC4731402](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4731402/)). The file can be found [here](https://github.com/xqwen/fastenloc/blob/master/tutorial/eur_ld.hg38.bed)
   * The resulting files were gzipped and z-scores were then converted to PIPs using torus, using the following commands in Bash:
   ```bash
   #BMD
