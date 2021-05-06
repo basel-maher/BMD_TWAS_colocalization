@@ -61,6 +61,7 @@ BMD_sub = BMD_sub[order(as.numeric(BMD_sub$chr2_hg38), as.numeric(BMD_sub$pos_hg
 
 ####
 #From Berisa and Pickrell, 2015 (PMC4731402)
+#File can be found here https://github.com/xqwen/fastenloc/blob/master/tutorial/eur_ld.hg38.bed
 
 loc = read.table("./data/eur_ld.hg38.bed", stringsAsFactors = F, header = T)
 loc$loc = paste0("Loc",rownames(loc))
@@ -153,6 +154,7 @@ frax_sub = frax_sub[-which(frax_sub$chr2_hg38 %in% c(1:22) == FALSE),] #remove c
 frax_sub = frax_sub[order(as.numeric(frax_sub$chr2_hg38), as.numeric(frax_sub$pos_hg38 )),] #order by chrom and BP
 
 #From Berisa and Pickrell, 2015 (PMC4731402)
+#https://github.com/xqwen/fastenloc/blob/master/tutorial/eur_ld.hg38.bed
 loc = read.table("./data/eur_ld.hg38.bed", stringsAsFactors = F, header = T)
 loc$loc = paste0("Loc",rownames(loc))
 
