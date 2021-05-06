@@ -2,7 +2,6 @@ library(emmeans)
 library(ggplot2)
 library(ggsignif)
 library(ggpubr)#mainly for stat_pvalue_manual
-#library(patchwork)
 library(car)
 
 #
