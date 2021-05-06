@@ -148,23 +148,13 @@ ggsave(plot = p13,filename = "FL_c.pdf", device = "pdf",path = "E:/Users/Basel/D
 
 
 #NOTE: THREE OF THE DATAPOINTS ARE MISSING GENOTYPES, SO REMOVED
-ls_bmd = read.csv("./data/pheno_data/05-NOV-2018 DXA Spine.csv")
-fn_bmd = read.csv("./data/pheno_data/05-NOV-2018 DXA Femur.csv")
+ls_bmd = read.csv("./data/ppp6r3_DXA_spine.csv")
+fn_bmd = read.csv("./data/ppp6r3_DXA_femur.csv")
 
-ls_bmd = ls_bmd[,c(2,7:12,21:22)]
-ls_bmd = merge.data.frame(ls_bmd, ppp6r3_merged, by.x="Subject.ID", by.y="MOUSE.ID")
 ls_bmd$GENOTYPE = factor(ls_bmd$GENOTYPE, levels=c("WT","HET","MUT"))
 
-ls_bmd_M = ls_bmd[which(ls_bmd$SEX=="M"),]
-ls_bmd_F = ls_bmd[which(ls_bmd$SEX=="F"),]
-
-
-fn_bmd = fn_bmd[,c(2,7:12,21:22)]
-fn_bmd = merge.data.frame(fn_bmd, ppp6r3_merged, by.x="Subject.ID", by.y="MOUSE.ID")
 fn_bmd$GENOTYPE = factor(fn_bmd$GENOTYPE, levels=c("WT","HET","MUT"))
 
-fn_bmd_M = fn_bmd[which(fn_bmd$SEX=="M"),]
-fn_bmd_F = fn_bmd[which(fn_bmd$SEX=="F"),]
 
 #################################################################
 lm.BMD <-lm(BMD~GENOTYPE+SEX+sac.weight+age+CenterRectX+CenterRectY,data=ls_bmd)
@@ -173,7 +163,6 @@ lff<-lsmeans(lm.BMD,"GENOTYPE")
 plot(lff,horizontal=FALSE)
 lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
 lff = as.data.frame(lff)
-#eff_size(lff, sigma(lm.BMD), df.residual(lm.BMD), method="pairwise")
 table(lm.BMD$model$SEX, lm.BMD$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.BMD, sex = "A", y.lab = "areal Bone Mineral Density - Lumbar Spine (g HA/cm2)", main.pheno = "areal Bone Mineral Density - Lumbar Spine (g HA/cm2)", mult = c(0.003, 0.015, 0.009)))
 ggsave(plot = p1,filename = "ls_aBMD_c.pdf", device = "pdf",path = "E:/Users/Basel/Desktop/",dpi = 300,width = 5,height = 5)
@@ -196,16 +185,11 @@ ggsave(plot = p1,filename = "fn_aBMD_c.pdf", device = "pdf",path = "E:/Users/Bas
 #analyze: "Tb.BV.TV", "Tb.vBMD", "Tb.vTMD", "Tb.Th", "Tb.Sp", "Tb.N"
 
 
-uCT = read.csv("./data/pheno_data/PPP6R3_VertebraeMicroCT_51samples_full.csv")
-
-#uCT$Sample.Num = apply(uCT, 1, function(x) strsplit(as.character(x[1]),split="15")[[1]][2])
+uCT = read.csv("./data/ppp6r3_uCT_spine.csv")
 
 #9 uCT samples thrown out because no weight info recorded.
 
-uCT = merge.data.frame(uCT, ppp6r3_merged, by.x="ID", by.y="MOUSE.ID", all.b=T)
 uCT$GENOTYPE = factor(uCT$GENOTYPE, levels=c("WT","HET","MUT"))
-uCT_M = uCT[which(uCT$SEX=="M"),]
-uCT_F = uCT[which(uCT$SEX=="F"),]
 
 lm.Tb.BV.TV <-lm(Tb.BV.TV~GENOTYPE+SEX+sac.weight+age, data=uCT)
 Anova(lm.Tb.BV.TV)
