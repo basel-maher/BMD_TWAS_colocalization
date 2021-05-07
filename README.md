@@ -52,11 +52,11 @@ Essentially, we follow the tutorial found [here](https://github.com/xqwen/fasten
   * Obtaining IMPCs results for BMD, as well as performing (and plotting) the statistical analyses of *Gpatch1* knockdowns was performed in the [impc_SOLR.R](./src/impc_SOLR.R) script.
   
 ### 5) Downstream analyses
-  * Downstream analyses integrating TWAS and colocalization, as well as many plots in our publication, were preformed in the [downstream_analyses.R](./src/downstream_analyses.R) script. 
+  * Downstream analyses integrating TWAS and colocalization, as well as many plots in our publication, were performed in the [downstream_analyses.R](./src/downstream_analyses.R) script. 
   * The Estrada *et al.* GWAS results were used here. Summary statistics can be obtained [here](http://www.gefos.org/?q=content/data-release-2012), and the [get_estrada_gwas_hg38_pos.R](./src/get_estrada_gwas_hg38_pos.R) was used to convert GWAS SNPs to hg38 coordinates.
 
 ### 6) *Ppp6r3* functional validation
-  * Statistical analyses and plotting of *Ppp6r3* experimental mice was performed in the [ppp6r3_analysis.R](./src/ppp6r3_analysis.R) script.
+  * Statistical analyses and plotting of *Ppp6r3* experimental mice were performed in the [ppp6r3_analysis.R](./src/ppp6r3_analysis.R) script.
   
   
 ---  
