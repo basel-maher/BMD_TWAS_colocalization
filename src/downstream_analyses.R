@@ -475,7 +475,7 @@ total.pos.bm <- getBM(attributes=c('ensembl_gene_id','chromosome_name',
 
 total.pos = merge(total.pos, total.pos.bm, by.y="ensembl_gene_id", by.x="gene")
 
-#get genes whose start sites are within 1 MBP of RUNX2 start site
+#get genes whose start sites are within 1.5 MBP of RUNX2 start site
 #chr6, pos 45328157
 
 x = total.pos[which((total.pos$chromosome_name == "6") & (total.pos$start_position >= 45328157-1500000) & (total.pos$start_position <= 45328157+1500000)),]
