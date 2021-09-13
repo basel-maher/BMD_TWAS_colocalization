@@ -3,6 +3,7 @@ library(ggplot2)
 library(ggsignif)
 library(ggpubr)#mainly for stat_pvalue_manual
 library(car)
+library(patchwork)
 
 #
 options(stringsAsFactors = FALSE)
@@ -14,6 +15,9 @@ options("na.action")
 #read in the combined phenotype file
 
 ppp6r3_data = read.csv("./data/ppp6r3_cleaned.csv")
+
+ppp6r3_data$GENOTYPE = factor(ppp6r3_data$GENOTYPE, levels=c("WT","HET","MUT"))
+
 
 # define plotting function
 plot_lsmeans = function(lm, sex="A", y.lab = "Phenotype", main.pheno = "Phenotype", mult = c(0.002, 0.007, 0.005)){
@@ -103,8 +107,9 @@ ggsave(plot = p,filename = "weight_c.pdf", device = "pdf",path = "./",dpi = 300,
 ###
 
 #removed FL with no condyles, and samples with no FL/AP/ML
-ppp6r3_caliper_cleaned = read.csv(file = "./data/ppp6r3_caliper_cleaned.csv")
+caliper_data = read.csv(file = "./data/ppp6r3_caliper_cleaned.csv")
 
+caliper_data$GENOTYPE = factor(caliper_data$GENOTYPE, levels=c("WT","HET","MUT"))
 
 
 ###
@@ -257,4 +262,435 @@ table(lm.Tb.N$model$SEX, lm.Tb.N$model$GENOTYPE)
 (p1 = plot_lsmeans(lm.Tb.N, sex = "A", y.lab = "Trabecular Number", main.pheno = "Trabecular Number - Lumbar Spine", mult = c(0.01, 0.035, 0.02)))
 ggsave(plot = p1,filename = "TbN_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 
+
+
+
+
+
+##Add in the Raman Data###
+ppp6r3_s1 = read.csv("./data//PPP6R3_mice_s1.csv")
+ppp6r3_s1 = ppp6r3_s1[!is.na(ppp6r3_s1$MOUSE.ID),]
+#experimental mouse sheet
+ppp6r3_s2 = read.csv("./data/PPP6R3_mice_s2.csv")
+ppp6r3_s2 = ppp6r3_s2[!is.na(ppp6r3_s2$Mouse),]
+
+ppp6r3_merged = merge(ppp6r3_s1,ppp6r3_s2, by.x ="MOUSE.ID", by.y="Mouse")
+
+
+
+#TAKE RELEVANT COLS
+ppp6r3_merged = ppp6r3_merged[,c("MOUSE.ID","SEX","GENOTYPE","length","sac.weight")]
+
+
+#
+#fix from HET? to HET
+
+
+ppp6r3_merged[which(ppp6r3_merged$MOUSE.ID=="163"),"GENOTYPE"] = "HET"
+
+#4 samples have unknown genotypes
+table(ppp6r3_merged$GENOTYPE)
+
+#remove mice with no genotype
+ppp6r3_merged = ppp6r3_merged[-which((ppp6r3_merged$GENOTYPE == "")),]
+ppp6r3_merged = ppp6r3_merged[-which((ppp6r3_merged$GENOTYPE == "?")),]
+
+
+
+
+raman_femur = read.csv("data/Raman/raman_femur.csv", stringsAsFactors = F)
+
+min.mat = aggregate(Min.Mat ~ Mouse.., data = raman_femur, FUN=mean) 
+carb.phos = aggregate(Carb.Phos ~ Mouse.., data = raman_femur, FUN=mean) 
+crystallinity = aggregate(Crystallinity ~ Mouse.., data = raman_femur, FUN=mean) 
+
+raman_femur_means = cbind(min.mat, carb.phos, crystallinity)
+raman_femur_means = raman_femur_means[,c(1,2,4,6)]
+
+raman_femur_means = merge(raman_femur_means, ppp6r3_merged, by.x = "Mouse..", by.y = "MOUSE.ID")
+raman_femur_means_F = raman_femur_means[which(raman_femur_means$SEX == "F"),]
+raman_femur_means_M = raman_femur_means[which(raman_femur_means$SEX == "M"),]
+
+raman_femur_means$GENOTYPE = factor(raman_femur_means$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_femur_means_F$GENOTYPE = factor(raman_femur_means_F$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_femur_means_M$GENOTYPE = factor(raman_femur_means_M$GENOTYPE, levels=c("WT","HET","MUT"))
+
+raman_spine = read.csv("data/Raman/raman_spine.csv", stringsAsFactors = F)
+
+min.mat = aggregate(Min.Mat ~ Mouse.., data = raman_spine, FUN=mean) 
+carb.phos = aggregate(Carb.Phos ~ Mouse.., data = raman_spine, FUN=mean) 
+crystallinity = aggregate(Crystallinity ~ Mouse.., data = raman_spine, FUN=mean) 
+
+raman_spine_means = cbind(min.mat, carb.phos, crystallinity)
+raman_spine_means = raman_spine_means[,c(1,2,4,6)]
+
+raman_spine_means = merge(raman_spine_means, ppp6r3_merged, by.x = "Mouse..", by.y = "MOUSE.ID")
+raman_spine_means_F = raman_spine_means[which(raman_spine_means$SEX == "F"),]
+raman_spine_means_M = raman_spine_means[which(raman_spine_means$SEX == "M"),]
+
+raman_spine_means$GENOTYPE = factor(raman_spine_means$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_spine_means_F$GENOTYPE = factor(raman_spine_means_F$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_spine_means_M$GENOTYPE = factor(raman_spine_means_M$GENOTYPE, levels=c("WT","HET","MUT"))
+
+####################################################################################################
+min.mat <-lm(Min.Mat ~ GENOTYPE + SEX, data=raman_femur_means)
+Anova(min.mat) 
+lff<-lsmeans(min.mat,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p1 = plot_lsmeans(min.mat, sex = "A", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+min.mat_F <-lm(Min.Mat ~ GENOTYPE, data=raman_femur_means_F)
+Anova(min.mat_F) 
+lff<-lsmeans(min.mat_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p2 = plot_lsmeans(min.mat_F, sex = "F", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Femur", mult = c(0.009, 0.03, 0.022)))
+
+min.mat_M <-lm(Min.Mat ~ GENOTYPE, data=raman_femur_means_M)
+Anova(min.mat_M) 
+lff<-lsmeans(min.mat_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p3 = plot_lsmeans(min.mat_M, sex = "M", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+
+###
+carb.phos <-lm(Carb.Phos ~ GENOTYPE + SEX, data=raman_femur_means)
+Anova(carb.phos) 
+lff<-lsmeans(carb.phos,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p4 = plot_lsmeans(carb.phos, sex = "A", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+carb.phos_F <-lm(Carb.Phos ~ GENOTYPE, data=raman_femur_means_F)
+Anova(carb.phos_F) 
+lff<-lsmeans(carb.phos_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p5 = plot_lsmeans(carb.phos_F, sex = "F", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+carb.phos_M <-lm(Carb.Phos ~ GENOTYPE, data=raman_femur_means_M)
+Anova(carb.phos_M) 
+lff<-lsmeans(carb.phos_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p6 = plot_lsmeans(carb.phos_M, sex = "M", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Femur", mult = c(0.015, 0.025, 0.005)))
+
+##
+crys <-lm(Crystallinity ~ GENOTYPE + SEX, data=raman_femur_means)
+Anova(crys) 
+lff<-lsmeans(crys,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p7 = plot_lsmeans(crys, sex = "A", y.lab = "Crystallinity", main.pheno = "Crystallinity - Femur", mult = c(0.001, 0.003, 0.005)))
+
+crys_F <-lm(Crystallinity ~ GENOTYPE, data=raman_femur_means_F)
+Anova(crys_F) 
+lff<-lsmeans(crys_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p8 = plot_lsmeans(crys_F, sex = "F", y.lab = "Crystallinity", main.pheno = "Crystallinity - Femur", mult = c(0.0007, 0.003, 0.007)))
+
+crys_M <-lm(Crystallinity ~ GENOTYPE, data=raman_femur_means_M)
+Anova(crys_M) 
+lff<-lsmeans(crys_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p9 = plot_lsmeans(crys_M, sex = "M", y.lab = "Crystallinity", main.pheno = "Crystallinity - Femur", mult = c(0.004, 0.013, 0.008)))
+
+p = (p1|p2|p3)/(p4|p5|p6)/(p7|p8|p9)
+
+ggsave(plot = p,filename = "mean_raman_femur.pdf", device = "pdf",path = "C://Users/basel/Desktop/",dpi = 300,width = 15,height = 20)
+
+
+## SPINES ##
+
+min.mat <-lm(Min.Mat ~ GENOTYPE + SEX, data=raman_spine_means)
+Anova(min.mat) 
+lff<-lsmeans(min.mat,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p10 = plot_lsmeans(min.mat, sex = "A", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Spine", mult = c(0.01, 0.035, 0.02)))
+
+min.mat_F <-lm(Min.Mat ~ GENOTYPE, data=raman_spine_means_F)
+Anova(min.mat_F) 
+lff<-lsmeans(min.mat_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p11 = plot_lsmeans(min.mat_F, sex = "F", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Spine", mult = c(0.03, 0.07, 0.045)))
+
+min.mat_M <-lm(Min.Mat ~ GENOTYPE, data=raman_spine_means_M)
+Anova(min.mat_M) 
+lff<-lsmeans(min.mat_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p12 = plot_lsmeans(min.mat_M, sex = "M", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Spine", mult = c(0.01, 0.035, 0.02)))
+
+######
+carb.phos <-lm(Carb.Phos ~ GENOTYPE + SEX, data=raman_spine_means)
+Anova(carb.phos) 
+lff<-lsmeans(carb.phos,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p13 = plot_lsmeans(carb.phos, sex = "A", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Spine", mult = c(0.00005, 0.012, 0.005)))
+
+carb.phos_F <-lm(Carb.Phos ~ GENOTYPE, data=raman_spine_means_F)
+Anova(carb.phos_F) 
+lff<-lsmeans(carb.phos_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p14 = plot_lsmeans(carb.phos_F, sex = "F", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Spine", mult = c(0.0001, 0.035, 0.02)))
+
+carb.phos_M <-lm(Carb.Phos ~ GENOTYPE, data=raman_spine_means_M)
+Anova(carb.phos_M) 
+lff<-lsmeans(carb.phos_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p15 = plot_lsmeans(carb.phos_M, sex = "M", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Spine", mult = c(0.012, 0.035, 0.02)))
+
+######
+crys <-lm(Crystallinity ~ GENOTYPE + SEX, data=raman_spine_means)
+Anova(crys) 
+lff<-lsmeans(crys,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p16 = plot_lsmeans(crys, sex = "A", y.lab = "Crystallinity", main.pheno = "Crystallinity - Spine", mult = c(0.003, 0.007, 0.005)))
+
+crys_F <-lm(Crystallinity ~ GENOTYPE, data=raman_spine_means_F)
+Anova(crys_F) 
+lff<-lsmeans(crys_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p17 = plot_lsmeans(crys_F, sex = "F", y.lab = "Crystallinity", main.pheno = "Crystallinity - Spine", mult = c(0.001, 0.005, 0.003)))
+
+crys_M <-lm(Crystallinity ~ GENOTYPE, data=raman_spine_means_M)
+Anova(crys_M) 
+lff<-lsmeans(crys_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p18 = plot_lsmeans(crys_M, sex = "M", y.lab = "Crystallinity", main.pheno = "Crystallinity - Spine", mult = c(0.005, 0.015, 0.01)))
+
+p = (p10|p11|p12)/(p13|p14|p15)/(p16|p17|p18)
+
+ggsave(plot = p,filename = "mean_raman_spine.pdf", device = "pdf",path = "C://Users/basel/Desktop/",dpi = 300,width = 15,height = 20)
+
+
+##################################### Raman SDs ###
+
+raman_femur = read.csv("data/Raman/raman_femur.csv", stringsAsFactors = F)
+
+min.mat = aggregate(Min.Mat ~ Mouse.., data = raman_femur, FUN=var) 
+carb.phos = aggregate(Carb.Phos ~ Mouse.., data = raman_femur, FUN=var) 
+crystallinity = aggregate(Crystallinity ~ Mouse.., data = raman_femur, FUN=var) 
+
+raman_femur_sd = cbind(min.mat, carb.phos, crystallinity)
+raman_femur_sd = raman_femur_sd[,c(1,2,4,6)]
+
+raman_femur_sd = merge(raman_femur_sd, ppp6r3_merged, by.x = "Mouse..", by.y = "MOUSE.ID")
+raman_femur_sd_F = raman_femur_sd[which(raman_femur_sd$SEX == "F"),]
+raman_femur_sd_M = raman_femur_sd[which(raman_femur_sd$SEX == "M"),]
+
+raman_femur_sd$GENOTYPE = factor(raman_femur_sd$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_femur_sd$GENOTYPE = factor(raman_femur_sd$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_femur_sd$GENOTYPE = factor(raman_femur_sd$GENOTYPE, levels=c("WT","HET","MUT"))
+
+
+raman_femur = read.csv("data/Raman/raman_spine.csv", stringsAsFactors = F)
+
+min.mat = aggregate(Min.Mat ~ Mouse.., data = raman_spine, FUN=var) 
+carb.phos = aggregate(Carb.Phos ~ Mouse.., data = raman_spine, FUN=var) 
+crystallinity = aggregate(Crystallinity ~ Mouse.., data = raman_spine, FUN=var) 
+
+raman_spine_sd = cbind(min.mat, carb.phos, crystallinity)
+raman_spine_sd = raman_spine_sd[,c(1,2,4,6)]
+
+raman_spine_sd = merge(raman_spine_sd, ppp6r3_merged, by.x = "Mouse..", by.y = "MOUSE.ID")
+raman_spine_sd_F = raman_spine_sd[which(raman_spine_sd$SEX == "F"),]
+raman_spine_sd_M = raman_spine_sd[which(raman_spine_sd$SEX == "M"),]
+
+raman_spine_sd$GENOTYPE = factor(raman_spine_sd$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_spine_sd_F$GENOTYPE = factor(raman_spine_sd_F$GENOTYPE, levels=c("WT","HET","MUT"))
+raman_spine_sd_M$GENOTYPE = factor(raman_spine_sd_M$GENOTYPE, levels=c("WT","HET","MUT"))
+
+
+
+####################################################################################################
+min.mat <-lm(Min.Mat ~ GENOTYPE + SEX, data=raman_femur_sd)
+Anova(min.mat) 
+lff<-lsmeans(min.mat,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p1 = plot_lsmeans(min.mat, sex = "A", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+min.mat_F <-lm(Min.Mat ~ GENOTYPE, data=raman_femur_sd_F)
+Anova(min.mat_F) 
+lff<-lsmeans(min.mat_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p2 = plot_lsmeans(min.mat_F, sex = "F", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Femur", mult = c(0.009, 0.03, 0.022)))
+
+min.mat_M <-lm(Min.Mat ~ GENOTYPE, data=raman_femur_sd_M)
+Anova(min.mat_M) 
+lff<-lsmeans(min.mat_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p3 = plot_lsmeans(min.mat_M, sex = "M", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+
+###
+carb.phos <-lm(Carb.Phos ~ GENOTYPE + SEX, data=raman_femur_sd)
+Anova(carb.phos) 
+lff<-lsmeans(carb.phos,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p4 = plot_lsmeans(carb.phos, sex = "A", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+carb.phos_F <-lm(Carb.Phos ~ GENOTYPE, data=raman_femur_sd_F)
+Anova(carb.phos_F) 
+lff<-lsmeans(carb.phos_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p5 = plot_lsmeans(carb.phos_F, sex = "F", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Femur", mult = c(0.01, 0.035, 0.02)))
+
+carb.phos_M <-lm(Carb.Phos ~ GENOTYPE, data=raman_femur_sd_M)
+Anova(carb.phos_M) 
+lff<-lsmeans(carb.phos_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p6 = plot_lsmeans(carb.phos_M, sex = "M", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Femur", mult = c(0.015, 0.025, 0.005)))
+
+##
+crys <-lm(Crystallinity ~ GENOTYPE + SEX, data=raman_femur_sd)
+Anova(crys) 
+lff<-lsmeans(crys,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p7 = plot_lsmeans(crys, sex = "A", y.lab = "Crystallinity", main.pheno = "Crystallinity - Femur", mult = c(0.001, 0.003, 0.005)))
+
+crys_F <-lm(Crystallinity ~ GENOTYPE, data=raman_femur_sd_F)
+Anova(crys_F) 
+lff<-lsmeans(crys_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p8 = plot_lsmeans(crys_F, sex = "F", y.lab = "Crystallinity", main.pheno = "Crystallinity - Femur", mult = c(0.0007, 0.003, 0.007)))
+
+crys_M <-lm(Crystallinity ~ GENOTYPE, data=raman_femur_sd_M)
+Anova(crys_M) 
+lff<-lsmeans(crys_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p9 = plot_lsmeans(crys_M, sex = "M", y.lab = "Crystallinity", main.pheno = "Crystallinity - Femur", mult = c(0.004, 0.013, 0.008)))
+
+p = (p1|p2|p3)/(p4|p5|p6)/(p7|p8|p9)
+
+ggsave(plot = p,filename = "var_raman_femur.pdf", device = "pdf",path = "C://Users/basel/Desktop/",dpi = 300,width = 15,height = 20)
+
+
+## SPINES ##
+
+min.mat <-lm(Min.Mat ~ GENOTYPE + SEX, data=raman_spine_sd)
+Anova(min.mat) 
+lff<-lsmeans(min.mat,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p10 = plot_lsmeans(min.mat, sex = "A", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Spine", mult = c(0.01, 0.035, 0.02)))
+
+min.mat_F <-lm(Min.Mat ~ GENOTYPE, data=raman_spine_sd_F)
+Anova(min.mat_F) 
+lff<-lsmeans(min.mat_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p11 = plot_lsmeans(min.mat_F, sex = "F", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Spine", mult = c(0.03, 0.07, 0.045)))
+
+min.mat_M <-lm(Min.Mat ~ GENOTYPE, data=raman_spine_sd_M)
+Anova(min.mat_M) 
+lff<-lsmeans(min.mat_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p12 = plot_lsmeans(min.mat_M, sex = "M", y.lab = "Mineral:Matrix Ratio", main.pheno = "Mineral:Matrix Ratio - Spine", mult = c(0.01, 0.035, 0.02)))
+
+######
+carb.phos <-lm(Carb.Phos ~ GENOTYPE + SEX, data=raman_spine_sd)
+Anova(carb.phos) 
+lff<-lsmeans(carb.phos,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p13 = plot_lsmeans(carb.phos, sex = "A", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Spine", mult = c(0.00005, 0.012, 0.005)))
+
+carb.phos_F <-lm(Carb.Phos ~ GENOTYPE, data=raman_spine_sd_F)
+Anova(carb.phos_F) 
+lff<-lsmeans(carb.phos_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p14 = plot_lsmeans(carb.phos_F, sex = "F", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Spine", mult = c(0.0001, 0.035, 0.02)))
+
+carb.phos_M <-lm(Carb.Phos ~ GENOTYPE, data=raman_spine_sd_M)
+Anova(carb.phos_M) 
+lff<-lsmeans(carb.phos_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p15 = plot_lsmeans(carb.phos_M, sex = "M", y.lab = "Carbonate:Phosphate Ratio", main.pheno = "Carbonate:Phosphate Ratio - Spine", mult = c(0.012, 0.035, 0.02)))
+
+######
+crys <-lm(Crystallinity ~ GENOTYPE + SEX, data=raman_spine_sd)
+Anova(crys) 
+lff<-lsmeans(crys,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p16 = plot_lsmeans(crys, sex = "A", y.lab = "Crystallinity", main.pheno = "Crystallinity - Spine", mult = c(0.003, 0.007, 0.005)))
+
+crys_F <-lm(Crystallinity ~ GENOTYPE, data=raman_spine_sd_F)
+Anova(crys_F) 
+lff<-lsmeans(crys_F,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p17 = plot_lsmeans(crys_F, sex = "F", y.lab = "Crystallinity", main.pheno = "Crystallinity - Spine", mult = c(0.001, 0.005, 0.003)))
+
+crys_M <-lm(Crystallinity ~ GENOTYPE, data=raman_spine_sd_M)
+Anova(crys_M) 
+lff<-lsmeans(crys_M,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+(p18 = plot_lsmeans(crys_M, sex = "M", y.lab = "Crystallinity", main.pheno = "Crystallinity - Spine", mult = c(0.005, 0.015, 0.01)))
+
+p = (p10|p11|p12)/(p13|p14|p15)/(p16|p17|p18)
+
+ggsave(plot = p,filename = "var_raman_spine.pdf", device = "pdf",path = "C://Users/basel/Desktop/",dpi = 300,width = 15,height = 20)
 
