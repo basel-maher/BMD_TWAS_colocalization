@@ -551,7 +551,6 @@ plot = ggplot(xx, aes(y = reorder(start_position,-start_position), x=-log10(bonf
 ggsave(filename="RERE_pos.pdf", plot=plot, device="pdf",
        path="plots/", height=6, width=1.5, units="in", dpi=500)
 
-####TRY DOING THIS WITH MIRRORPLOTS INSTEAD###
 
 
 
@@ -904,6 +903,50 @@ write.csv(x=x,file = "tables/supp_6.csv", quote = F,row.names = F)
 #7, GO enrichments for the 512 prioritized genes, subset pval <= 0.05
 t.all = readRDS("assets/t.all") # topGO gene ontology for the 512 prioritized genes
 t.all = t.all[t.all$classic <=0.05,]
+
+t.all$genes = NA
+
+#MF
+t.all.MF = t.all[which(t.all$ontology == "MF"),]
+
+GOdata <- new("topGOdata", ontology = "MF", allGenes =geneList,
+              annot = annFUN.org, mapping='org.Hs.eg.db', ID='ENSEMBL')
+
+t.all.MF$genes <- sapply(t.all.MF$GO.ID, function(x)
+{
+  genes<-genesInTerm(GOdata, x) 
+  genes[[1]][genes[[1]] %in% interesting.genes]
+})
+
+#CC
+t.all.CC = t.all[which(t.all$ontology == "CC"),]
+
+GOdata <- new("topGOdata", ontology = "CC", allGenes =geneList,
+              annot = annFUN.org, mapping='org.Hs.eg.db', ID='ENSEMBL')
+
+t.all.CC$genes <- sapply(t.all.CC$GO.ID, function(x)
+{
+  genes<-genesInTerm(GOdata, x) 
+  genes[[1]][genes[[1]] %in% interesting.genes]
+})
+
+
+#BP
+#CC
+t.all.BP = t.all[which(t.all$ontology == "BP"),]
+
+GOdata <- new("topGOdata", ontology = "BP", allGenes =geneList,
+              annot = annFUN.org, mapping='org.Hs.eg.db', ID='ENSEMBL')
+
+t.all.BP$genes <- sapply(t.all.BP$GO.ID, function(x)
+{
+  genes<-genesInTerm(GOdata, x) 
+  genes[[1]][genes[[1]] %in% interesting.genes]
+})
+
+t.all = NULL
+t.all<-rbind(t.all.MF,t.all.CC,t.all.BP)
+t.all$classic<-as.numeric(as.character(t.all$classic))
 
 write.table(x=t.all,file = "tables/supp_7.csv", quote = F,row.names = F,sep = "\t")
 

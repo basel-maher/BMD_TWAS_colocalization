@@ -148,7 +148,7 @@ table(lm.FL$model$SEX, lm.FL$model$GENOTYPE)
 p13 = plot_lsmeans(lm.FL, sex = "A", y.lab = "Femoral Length (mm)", main.pheno = "Femoral Length", mult = c(0.003, 0.015, 0.008))
 ggsave(plot = p13,filename = "FL_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
 ####DXA analyses####
-#analyze: BMD, BMC, B.Area, T.Area, RST?, Fat?
+
 
 
 #NOTE: THREE OF THE DATAPOINTS ARE MISSING GENOTYPES, SO REMOVED
