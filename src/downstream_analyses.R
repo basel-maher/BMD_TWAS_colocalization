@@ -290,8 +290,8 @@ impc = unique(impc) #2,360 genes
 
 #convert mouse to human gene names
 
-human = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
-mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl")
+human = useMart("ensembl", dataset = "hsapiens_gene_ensembl",host = "nov2020.archive.ensembl.org")
+mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl",host = "nov2020.archive.ensembl.org")
 
 
 impc_hum = getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol", values = impc , mart = mouse, attributesL = c("hgnc_symbol", "ensembl_gene_id"), martL = human, uniqueRows=T)
@@ -586,7 +586,7 @@ ggsave(filename="hist.pdf", plot=plot, device="pdf",
 t3$classic = as.numeric(t3$classic)
 t3.s = t3[which(t3$classic <= 0.05),]
 
-t3.ss = t3.s[c(1,2,3,5,6,9,10,12,13,15,17,18,19,27,28,35,37,38,43:49,52,56,58,60,64,69,71,72,84,85,87,95,97,111,113),]
+t3.ss = t3.s[c(1,2,6,7,9,10,13,16,17,21,23:26,28,30,32,34:37,41,43,44,48,49,53,54,58,60:62,64,67,68,70,71,73,74,75),]
 
 t3.ss$classic = -log10(t3.ss$classic)
 
@@ -912,37 +912,43 @@ t.all.MF = t.all[which(t.all$ontology == "MF"),]
 GOdata <- new("topGOdata", ontology = "MF", allGenes =geneList,
               annot = annFUN.org, mapping='org.Hs.eg.db', ID='ENSEMBL')
 
-t.all.MF$genes <- sapply(t.all.MF$GO.ID, function(x)
-{
-  genes<-genesInTerm(GOdata, x) 
-  genes[[1]][genes[[1]] %in% interesting.genes]
-})
-
+for(i in 1:nrow(t.all.MF)){
+  go.id =  t.all.MF$GO.ID[i]
+  genes<-unname(unlist(genesInTerm(GOdata, go.id)))
+  genes=genes[genes %in% interesting.genes]
+  genes = toString(genes)
+  t.all.MF$genes[i] = genes
+  
+}
 #CC
 t.all.CC = t.all[which(t.all$ontology == "CC"),]
 
 GOdata <- new("topGOdata", ontology = "CC", allGenes =geneList,
               annot = annFUN.org, mapping='org.Hs.eg.db', ID='ENSEMBL')
 
-t.all.CC$genes <- sapply(t.all.CC$GO.ID, function(x)
-{
-  genes<-genesInTerm(GOdata, x) 
-  genes[[1]][genes[[1]] %in% interesting.genes]
-})
-
+for(i in 1:nrow(t.all.CC)){
+  go.id =  t.all.MF$GO.ID[i]
+  genes<-unname(unlist(genesInTerm(GOdata, go.id)))
+  genes=genes[genes %in% interesting.genes]
+  genes = toString(genes)
+  t.all.CC$genes[i] = genes
+  
+}
 
 #BP
-#CC
 t.all.BP = t.all[which(t.all$ontology == "BP"),]
 
 GOdata <- new("topGOdata", ontology = "BP", allGenes =geneList,
               annot = annFUN.org, mapping='org.Hs.eg.db', ID='ENSEMBL')
 
-t.all.BP$genes <- sapply(t.all.BP$GO.ID, function(x)
-{
-  genes<-genesInTerm(GOdata, x) 
-  genes[[1]][genes[[1]] %in% interesting.genes]
-})
+for(i in 1:nrow(t.all.BP)){
+  go.id =  t.all.MF$GO.ID[i]
+  genes<-unname(unlist(genesInTerm(GOdata, go.id)))
+  genes=genes[genes %in% interesting.genes]
+  genes = toString(genes)
+  t.all.BP$genes[i] = genes
+  
+}
 
 t.all = NULL
 t.all<-rbind(t.all.MF,t.all.CC,t.all.BP)
@@ -952,16 +958,21 @@ write.table(x=t.all,file = "tables/supp_7.csv", quote = F,row.names = F,sep = "\
 
 #8, Novel prioritized genes (137)
 x = novel_0.5_ens[,c("gene_name","ens","RCP","tissue","bonf")]
-xx = as.data.frame(matrix(nrow=1, ncol=5))
+x$count_signif_tis = NA
+xx = as.data.frame(matrix(nrow=1, ncol=6))
 colnames(xx) = colnames(x)
 
 for(i in unique(x$gene_name)){
   
   s = as.data.frame(subset(x, gene_name == i))
+  n = nrow(s)
   s = s[which(s$RCP == max(s$RCP)),]
+  s$count_signif_tis = n
   xx = rbind(xx,s)
   
 }
+
+xx = xx[-1,]
 
 write.table(x=xx,file = "tables/supp_8.csv", quote = F,row.names = F,sep = "\t") #TLN2 has two entries, same RCP in nerve_tibial and esophagus_muscularis
 
