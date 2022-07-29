@@ -267,6 +267,266 @@ ggsave(plot = p1,filename = "TbN_c.pdf", device = "pdf",path = "./",dpi = 300,wi
 
 
 
+
+
+#################################################################
+#uCT FEMURS
+#DISTAL
+#"BV.TV", "Conn.Dens.", "TMD", "Tb.Th", "Tb.Sp", "Tb.N","TRI.BV.TV","TRI.BS.BV","TRI.Tb.N","TRI.Tb.Th","TRI.Tb.Sp"
+uCT_fem_dist = read.csv("./data/ppp6r3_uCT_femur_distal.csv")
+uCT_fem_dist = merge(uCT_fem_dist,ppp6r3_data,by.x = "ID", by.y="MOUSE.ID")
+
+uCT_fem_dist$GENOTYPE = factor(uCT_fem_dist$GENOTYPE, levels=c("WT","HET","MUT"))
+
+
+lm.BV.TV <-lm(BV.TV~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.BV.TV)
+lff<-lsmeans(lm.BV.TV,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.BV.TV$model$SEX, lm.BV.TV$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.BV.TV, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.Conn.Dens. <-lm(Conn.Dens.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.Conn.Dens.)
+lff<-lsmeans(lm.Conn.Dens.,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Conn.Dens.$model$SEX, lm.Conn.Dens.$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Conn.Dens., sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.TMD <-lm(TMD~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.TMD)
+lff<-lsmeans(lm.TMD,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.TMD$model$SEX, lm.TMD$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.TMD, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.Tb.Th <-lm(Tb.Th.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.Tb.Th)
+lff<-lsmeans(lm.Tb.Th,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Tb.Th$model$SEX, lm.Tb.Th$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Tb.Th, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.Tb.Sp <-lm(Tb.Sp.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.Tb.Sp)
+lff<-lsmeans(lm.Tb.Sp,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Tb.Sp$model$SEX, lm.Tb.Sp$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Tb.Sp, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.Tb.N <-lm(Tb.N.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.Tb.N)
+lff<-lsmeans(lm.Tb.N,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Tb.N$model$SEX, lm.Tb.N$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Tb.N, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.TRI.BV.TV <-lm(TRI.BV.TV~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.TRI.BV.TV)
+lff<-lsmeans(lm.TRI.BV.TV,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.TRI.BV.TV$model$SEX, lm.TRI.BV.TV$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.TRI.BV.TV, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.TRI.BS.BV <-lm(TRI.BS.BV~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.TRI.BS.BV)
+lff<-lsmeans(lm.TRI.BS.BV,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.TRI.BS.BV$model$SEX, lm.TRI.BS.BV$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.TRI.BS.BV, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.TRI.Tb.N <-lm(TRI.Tb.N~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.TRI.Tb.N)
+lff<-lsmeans(lm.TRI.Tb.N,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.TRI.Tb.N$model$SEX, lm.TRI.Tb.N$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.TRI.Tb.N, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.TRI.Tb.Th <-lm(TRI.Tb.Th~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.TRI.Tb.Th)
+lff<-lsmeans(lm.TRI.Tb.Th,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.TRI.Tb.Th$model$SEX, lm.TRI.Tb.Th$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.TRI.Tb.Th, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.TRI.Tb.Sp <-lm(TRI.Tb.Sp~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.TRI.Tb.Sp)
+lff<-lsmeans(lm.TRI.Tb.Sp,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.TRI.Tb.Sp$model$SEX, lm.TRI.Tb.Sp$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.TRI.Tb.Sp, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.SMI <-lm(SMI~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.SMI)
+lff<-lsmeans(lm.SMI,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.SMI$model$SEX, lm.SMI$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.SMI, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.DA <-lm(DA~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_dist)
+Anova(lm.DA)
+lff<-lsmeans(lm.DA,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.DA$model$SEX, lm.DA$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.DA, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+#MIDSHAFT
+uCT_fem_mid = read.csv("./data/ppp6r3_uCT_femur_midshaft.csv")
+uCT_fem_mid = merge(uCT_fem_mid,ppp6r3_data,by.x = "ID", by.y="MOUSE.ID")
+
+uCT_fem_mid$GENOTYPE = factor(uCT_fem_mid$GENOTYPE, levels=c("WT","HET","MUT"))
+
+#VOX.BV.TV , MEAN1, MEAN2, Ct.th, Imax, Imin, TotalArea, MarrowArea
+
+lm.VOX.BV.TV <-lm(VOX.BV.TV~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.VOX.BV.TV)
+lff<-lsmeans(lm.VOX.BV.TV,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.VOX.BV.TV$model$SEX, lm.VOX.BV.TV$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.VOX.BV.TV, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.MEAN1 <-lm(Mean1~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.MEAN1)
+lff<-lsmeans(lm.MEAN1,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.MEAN1$model$SEX, lm.MEAN1$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.MEAN1, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+
+lm.MEAN2 <-lm(Mean2~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.MEAN2)
+lff<-lsmeans(lm.MEAN2,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.MEAN2$model$SEX, lm.MEAN2$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.MEAN2, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+
+lm.Ct.th <-lm(Ct.Th~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.Ct.th)
+lff<-lsmeans(lm.Ct.th,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Ct.th$model$SEX, lm.Ct.th$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Ct.th, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+
+lm.Imax <-lm(Imax.mm.4.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.Imax)
+lff<-lsmeans(lm.Imax,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Imax$model$SEX, lm.Imax$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Imax, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+
+lm.Imin <-lm(Imin.mm.4.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.Imin)
+lff<-lsmeans(lm.Imin,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Imin$model$SEX, lm.Imin$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Imin, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.Tot.Ar <-lm(TotalArea.mm.2.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.Tot.Ar)
+lff<-lsmeans(lm.Tot.Ar,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Tot.Ar$model$SEX, lm.Tot.Ar$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Tot.Ar, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+lm.Ma.Ar <-lm(MarrowArea.mm.2.~GENOTYPE+SEX+sac.weight+age, data=uCT_fem_mid)
+Anova(lm.Ma.Ar)
+lff<-lsmeans(lm.Ma.Ar,"GENOTYPE")
+plot(lff,horizontal=FALSE)
+lsmeans(lff,pairwise~GENOTYPE, adj="tukey")
+lff = as.data.frame(lff)
+table(lm.Ma.Ar$model$SEX, lm.Ma.Ar$model$GENOTYPE)
+(p1 = plot_lsmeans(lm.Ma.Ar, sex = "A", y.lab = "Trabecular BV/TV", main.pheno = "Trabecular Bone Volume Fraction - Lumbar Spine", mult = c(0.007, 0.025, 0.015)))
+ggsave(plot = p1,filename = "tbbvtv_c.pdf", device = "pdf",path = "./",dpi = 300,width = 5,height = 5)
+
+
+
+#IMIN ALMOST, Tot.Area, Ma.Ar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################################
+
+
 ##Add in the Raman Data###
 ppp6r3_s1 = read.csv("./data//PPP6R3_mice_s1.csv")
 ppp6r3_s1 = ppp6r3_s1[!is.na(ppp6r3_s1$MOUSE.ID),]
